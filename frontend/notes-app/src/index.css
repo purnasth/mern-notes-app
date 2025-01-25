@@ -4,6 +4,10 @@
   body {
     @apply font-[Poppins];
   }
+
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 @layer components {
@@ -13,6 +17,14 @@
 
   .btn-primary {
     @apply w-full text-sm bg-rose-500 text-white px-5 py-3 rounded mb-4 outline-none hover:bg-rose-600 transition-all duration-200 ease-in-out;
+  }
+
+  .icon-btn {
+    @apply text-xl text-slate-300 cursor-pointer hover:text-rose-500;
+  }
+
+  .input-label {
+    @apply text-sm text-slate-400;
   }
 
 }
