@@ -1,25 +1,59 @@
-import React from "react";
+import React, { useState } from "react";
 import PasswordInput from "../../components/Input/PasswordInput";
+import { validateEmail } from "../../utils/helper";
+import { Link } from "react-router-dom";
 
 const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (!password) {
+      setError("Please enter a password.");
+      return;
+    }
+
+    setError(null);
+  };
+
   return (
     <>
       <div className="flex items-center justify-center mt-28">
         <div className="w-96 border rounded bg-white px-7 py-10">
-          <form onSubmit={() => {}}>
+          <form onSubmit={handleLogin}>
             <h4 className="text-2xl mb-7">Login</h4>
-            <input type="text" placeholder="Email" className="input-box" />
-            <PasswordInput placeholder="Password" />
+            <input
+              type="text"
+              placeholder="Email"
+              className="input-box"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <PasswordInput
+              placeholder="Password"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+            />
 
-            <button type="submit" className="btn-primary">
+            {error && <p className="text-red-500 text-sm pb-1">{error}</p>}
+
+            <button type="submit" className="btn-primary cursor-pointer">
               Login
             </button>
 
-            <p>
+            <p className="text-sm text-center">
               Not registered?{" "}
-              <a href="/signup" className="text-pink-500 underline">
+              <Link to="/signup" className="text-rose-500 underline">
                 Create an account
-              </a>
+              </Link>
             </p>
           </form>
         </div>

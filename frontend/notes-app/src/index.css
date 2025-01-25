@@ -12,7 +12,7 @@
   }
 
   .btn-primary {
-    @apply w-full text-sm bg-[#FF3366] text-white px-5 py-3 rounded mb-4 outline-none hover:bg-[#944559];
+    @apply w-full text-sm bg-rose-500 text-white px-5 py-3 rounded mb-4 outline-none hover:bg-rose-600 transition-all duration-200 ease-in-out;
   }
 
 }
