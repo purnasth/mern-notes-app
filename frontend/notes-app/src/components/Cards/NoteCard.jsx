@@ -1,6 +1,6 @@
 import React from "react";
-import {  MdCreate, MdDelete, MdOutlinePushPin } from "react-icons/md";
-import AddEditNotes from "../../pages/Home/AddEditNotes";
+import { MdCreate, MdDelete, MdOutlinePushPin } from "react-icons/md";
+import moment from "moment";
 
 const NoteCard = ({
   title,
@@ -18,7 +18,9 @@ const NoteCard = ({
         <div className="flex items-center justify-between">
           <div>
             <h6 className="text-sm font-medium">{title}</h6>
-            <span className="text-sm text-slate-500">{date}</span>
+            <span className="text-sm text-slate-500">
+              {moment(date).format("MMM DD, YYYY")}
+            </span>
           </div>
 
           <MdOutlinePushPin
@@ -32,7 +34,11 @@ const NoteCard = ({
         <p className="text-xs text-slate-600 mt-2">{content?.slice(0, 60)}</p>
 
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-slate-500">{tags}</span>
+          <ul className="text-xs text-slate-500 flex items-center flex-wrap gap-2">
+            {tags?.map((tag, index) => (
+              <li key={index}>#{tag}</li>
+            ))}
+          </ul>
 
           <div className="flex items-center gap-2">
             <MdCreate

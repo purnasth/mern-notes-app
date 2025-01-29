@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NoteCard from "../../components/Cards/NoteCard";
 import { MdAdd } from "react-icons/md";
 import AddEditNotes from "./AddEditNotes";
 import Modal from "react-modal";
+import axiosInstance from "../../utils/axiosInstance";
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -10,6 +11,26 @@ const Home = () => {
     type: "add",
     data: null,
   });
+
+  const [allNotes, setAllNotes] = useState([]);
+
+  // get all notes
+  const getAllNotes = async () => {
+    try {
+      const response = await axiosInstance.get("/get-all-notes");
+
+      if (response.data && response.data.notes) {
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllNotes();
+    return () => {};
+  }, []);
 
   return (
     <>
@@ -24,16 +45,25 @@ const Home = () => {
 
       <div className="container mx-auto">
         <div className="grid grid-cols-3 gap-4 mt-10">
-          <NoteCard
-            title="Meeting on 7th April"
-            date="April 3, 2024"
-            content="Meeting with the team to discuss the project progress."
-            tags="#meeting"
-            isPinned={true}
-            onEdit={() => {}}
-            onDelete={() => {}}
-            onPinNote={() => {}}
-          />
+          {allNotes.map((note) => (
+            <NoteCard
+              key={note._id}
+              title={note.title}
+              date={note.createdOn}
+              content={note.content}
+              tags={note.tags}
+              isPinned={note.isPinned}
+              onEdit={() =>
+                setOpenAddEditModal({
+                  isShown: true,
+                  type: "edit",
+                  data: note,
+                })
+              }
+              onDelete={() => {}}
+              onPinNote={() => {}}
+            />
+          ))}
         </div>
       </div>
 
@@ -67,6 +97,7 @@ const Home = () => {
         <AddEditNotes
           type={openAddEditModal.type}
           noteData={openAddEditModal.data}
+          getAllNotes={getAllNotes}
           onClose={() =>
             setOpenAddEditModal({ isShown: false, type: "add", data: null })
           }
