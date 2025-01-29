@@ -1,5 +1,6 @@
 import React from "react";
-import { MdCreate, MdDelete, MdOutlinePushPin } from "react-icons/md";
+import { MdCreate, MdDelete } from "react-icons/md";
+import { RiPushpin2Fill, RiPushpin2Line } from "react-icons/ri";
 import moment from "moment";
 
 const NoteCard = ({
@@ -23,12 +24,24 @@ const NoteCard = ({
             </span>
           </div>
 
-          <MdOutlinePushPin
+          {/* <MdOutlinePushPin
             className={`icon-btn ${
               isPinned ? "text-rose-500" : "text-slate-500"
             }`}
             onClick={onPinNote}
-          />
+          /> */}
+          {/* here instead could you please make it such that if isPinned is true add the fill icon else outline */}
+          {isPinned ? (
+            <RiPushpin2Fill
+              className="text-rose-500 cursor-pointer hover:text-rose-600 icon-btn"
+              onClick={onPinNote}
+            />
+          ) : (
+            <RiPushpin2Line
+              className="text-slate-500 cursor-pointer hover:text-rose-600 icon-btn"
+              onClick={onPinNote}
+            />
+          )}
         </div>
 
         <p className="text-xs text-slate-600 mt-2">{content?.slice(0, 60)}</p>
