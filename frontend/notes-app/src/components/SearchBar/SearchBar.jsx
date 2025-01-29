@@ -12,6 +12,7 @@ const SearchBar = ({ value, onChange, handleSearch, onClearSearch }) => {
           className="w-full bg-transparent focus:outline-none px-1 py-1"
           value={value}
           onChange={onChange}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
         />
 
         {value.length > 0 && (

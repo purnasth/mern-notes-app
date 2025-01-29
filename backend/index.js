@@ -312,6 +312,33 @@ app.put("/update-note-pinned/:noteId", autthenticateToken, async (req, res) => {
   }
 });
 
+// Search notes
+app.get("/search-notes", autthenticateToken, async (req, res) => {
+  const { user } = req.user;
+  const { query } = req.query;
+
+  try {
+    const notes = await Note.find({
+      userId: user._id,
+      $or: [
+        { title: { $regex: query, $options: "i" } },
+        { content: { $regex: query, $options: "i" } },
+        { tags: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    return res.json({
+      error: false,
+      notes,
+      message: "Notes fetched successfully",
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal Server Error" });
+  }
+});
+
 app.listen(8000, () => {
   console.log("Server is running on port 8000");
 });

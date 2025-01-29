@@ -6,6 +6,8 @@ import Modal from "react-modal";
 import axiosInstance from "../../utils/axiosInstance";
 import Toast from "../../components/ToastMessage/Toast";
 import EmptyCard from "../../components/EmptyCard/EmptyCard";
+import Navbar from "../../components/Navbar/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -21,6 +23,8 @@ const Home = () => {
   });
 
   const [allNotes, setAllNotes] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
+  const [isSearch, setIsSearch] = useState(false);
 
   const handleEdit = (noteDetails) => {
     setOpenAddEditModal({
@@ -78,8 +82,57 @@ const Home = () => {
     setShowToastMsg({ isShown: false, message: "", type: "" });
   };
 
+  const navigate = useNavigate();
+
+  // Get user info
+  const getUserInfo = async () => {
+    try {
+      const response = await axiosInstance.get("/get-user");
+
+      if (response.data && response.data.user) {
+        setUserInfo(response.data.user);
+      }
+    } catch (error) {
+      if (error.response.status === 401) {
+        localStorage.clear();
+        navigate("/login");
+      }
+    }
+  };
+
+  // Search notes by title or content
+  const onSearchNote = async (query) => {
+    try {
+      const response = await axiosInstance.get("/search-notes", {
+        params: { query },
+      });
+
+      if (response.data && response.data.notes) {
+        setIsSearch(true);
+        setAllNotes(response.data.notes);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleClearSearch = () => {
+    setIsSearch(false);
+    getAllNotes();
+  };
+
+  useEffect(() => {
+    getUserInfo();
+    return () => {};
+  }, []);
+
   return (
     <>
+      <Navbar
+        userInfo={userInfo}
+        onSearchNote={onSearchNote}
+        handleClearSearch={handleClearSearch}
+      />
       <div className="container mx-auto">
         {allNotes.length > 0 ? (
           <div className="grid grid-cols-3 gap-4 mt-10">
@@ -99,7 +152,11 @@ const Home = () => {
           </div>
         ) : (
           <EmptyCard
-            message={`Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`}
+            message={
+              isSearch
+                ? `Oops no notes found! Create a new note.`
+                : `Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember`
+            }
           />
         )}
       </div>
