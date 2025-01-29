@@ -1,0 +1,3 @@
+{
+    "connectionString": "mongodb+srv://root:notes-app@mern-notes-app.msvlb.mongodb.net/?retryWrites=true&w=majority&appName=mern-notes-app"
+}
