@@ -170,7 +170,7 @@ const Home = () => {
                 tags={note.tags}
                 isPinned={note.isPinned}
                 onEdit={() => handleEdit(note)}
-                onDelete={() => deleteNote(note)}
+                onDelete={() => deleteNote(note._id)}
                 onPinNote={() => {
                   updateIsPinned(note);
                 }}
