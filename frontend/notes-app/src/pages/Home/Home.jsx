@@ -4,6 +4,8 @@ import { MdAdd } from "react-icons/md";
 import AddEditNotes from "./AddEditNotes";
 import Modal from "react-modal";
 import axiosInstance from "../../utils/axiosInstance";
+import Toast from "../../components/ToastMessage/Toast";
+import EmptyCard from "../../components/EmptyCard/EmptyCard";
 
 const Home = () => {
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -12,9 +14,23 @@ const Home = () => {
     data: null,
   });
 
+  const [showToastMsg, setShowToastMsg] = useState({
+    isShown: false,
+    message: "",
+    type: "",
+  });
+
   const [allNotes, setAllNotes] = useState([]);
 
-  // get all notes
+  const handleEdit = (noteDetails) => {
+    setOpenAddEditModal({
+      isShown: true,
+      type: "edit",
+      data: noteDetails,
+    });
+  };
+
+  // Get all notes
   const getAllNotes = async () => {
     try {
       const response = await axiosInstance.get("/get-all-notes");
@@ -27,44 +43,65 @@ const Home = () => {
     }
   };
 
+  // Delete note
+  const deleteNote = async (noteId) => {
+    try {
+      const response = await axiosInstance.delete(`/delete-note/${noteId}`);
+
+      if (response.data && !response.data.error) {
+        showToastMessage(response.data.message, "delete");
+        getAllNotes();
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        showToastMessage(error.response.data.message, "delete");
+      } else {
+        showToastMessage("An error occurred. Please try again.", "delete");
+      }
+    }
+  };
+
   useEffect(() => {
     getAllNotes();
     return () => {};
   }, []);
 
+  const showToastMessage = (message, type) => {
+    setShowToastMsg({ isShown: true, message: message, type: type });
+  };
+
+  const handleCloseToast = () => {
+    setShowToastMsg({ isShown: false, message: "", type: "" });
+  };
+
   return (
     <>
-      {/* <div className="flex items-center justify-center mt-28">
-        <div className="w-96 border rounded bg-white px-7 py-10">
-          <h4 className="text-2xl mb-7">Welcome to Notes App</h4>
-          <p className="text-center">
-            This is a simple note-taking app built with React and Tailwind CSS.
-          </p>
-        </div>
-      </div> */}
-
       <div className="container mx-auto">
-        <div className="grid grid-cols-3 gap-4 mt-10">
-          {allNotes.map((note) => (
-            <NoteCard
-              key={note._id}
-              title={note.title}
-              date={note.createdOn}
-              content={note.content}
-              tags={note.tags}
-              isPinned={note.isPinned}
-              onEdit={() =>
-                setOpenAddEditModal({
-                  isShown: true,
-                  type: "edit",
-                  data: note,
-                })
-              }
-              onDelete={() => {}}
-              onPinNote={() => {}}
-            />
-          ))}
-        </div>
+        {allNotes.length > 0 ? (
+          <div className="grid grid-cols-3 gap-4 mt-10">
+            {allNotes.map((note) => (
+              <NoteCard
+                key={note._id}
+                title={note.title}
+                date={note.createdOn}
+                content={note.content}
+                tags={note.tags}
+                isPinned={note.isPinned}
+                onEdit={() => handleEdit(note)}
+                onDelete={() => deleteNote(note._id)}
+                onPinNote={() => {}}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyCard
+            message={`Start creating your first note! Click on the '+' button below to add a new note that could be your thoughts, ideas, or anything you want to remember.`}
+          />
+        )}
       </div>
 
       <button
@@ -82,7 +119,9 @@ const Home = () => {
       </button>
       <Modal
         isOpen={openAddEditModal.isShown}
-        onRequestClose={() => {}}
+        onRequestClose={() =>
+          setOpenAddEditModal({ isShown: false, type: "add", data: null })
+        }
         contentLabel=""
         className="w-[40%] max-h-3/4 bg-white rounded-md mx-auto mt-14 p-8 overflow-auto"
         style={{
@@ -101,8 +140,16 @@ const Home = () => {
           onClose={() =>
             setOpenAddEditModal({ isShown: false, type: "add", data: null })
           }
+          showToastMessage={showToastMessage}
         />
       </Modal>
+
+      <Toast
+        message={showToastMsg.message}
+        isShown={showToastMsg.isShown}
+        type={showToastMsg.type}
+        onClose={handleCloseToast}
+      />
     </>
   );
 };
