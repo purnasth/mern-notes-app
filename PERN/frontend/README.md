@@ -1,50 +1,119 @@
-# React + TypeScript + Vite
+# Notes App - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Set Up the Frontend
 
-Currently, two official plugins are available:
+### 1.1 Initialize the Project
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. Create a new directory for your project:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+cd notes-app
+mkdir frontend
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. Initialize the frontend:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+pnpm create vite@latest . --template react-ts
+cd frontend
 ```
+
+3. Install dependencies:
+
+```bash
+pnpm install
+```
+
+`Note:` Vite is a build tool that provides a fast development server and optimized production build. The `--template react-ts` flag creates a React project with TypeScript support.
+
+4. Add tailwindcss:
+
+```bash
+pnpm install tailwindcss @tailwindcss/vite
+```
+
+5. `vite.config.ts`:
+
+```typescript
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+});
+
+```
+
+6. `index.css`:
+
+```css
+@import "tailwindcss";
+```
+
+7. Run the frontend:
+
+```bash
+pnpm run dev
+```
+
+`Note:` The frontend should be running on `http://localhost:5173`.
+
+---
+
+### 1.2 Folder Structure
+
+```
+📂 frontend
+├── 📂 public
+│   ├── index.html
+├── 📂 src
+│   ├── 📂 components
+│   │   ├── [ComponentName].tsx
+│   ├── 📂 pages
+│   │   ├── [PageName].tsx
+│   ├── 📂 services
+│   │   ├── [api].ts
+│   ├── App.tsx
+│   ├── index.css
+│   ├── index.tsx
+│   ├── main.tsx
+│   └── types.ts
+├── .gitignore
+├── package.json
+├── pnpm-lock.yaml
+├── README.md
+└── tsconfig.json
+```
+
+### 1.3 API URL and Usage
+
+1. Create a `.env` file in the frontend directory:
+
+```bash
+VITE_API_URL=http://localhost:5000/api
+```
+
+`Note:` Replace `http://localhost:5000/api` with your backend API URL.
+
+--
+
+1. `/register` : on backend (`/api/auth/register`)
+- Files Used: `Register.tsx`
+- Usage: Register a new user
+
+2. `/login` : on backend (`/api/auth/login`)
+- Files Used: `Login.tsx`
+- Usage: Login with the registered user
+
+3. `/` : on backend 
+
+4. `/users` : on backend (`/api/users`)
+- Files Used: `Users.tsx`,
+- Usage: Get all users
+
+5. `/all-notes` : on backend (`/api/notes/all`)
+- Files Used: `AllNotes.tsx`,
+- Usage: Get all notes
+
+---

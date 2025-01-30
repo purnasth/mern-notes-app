@@ -58,12 +58,12 @@ Update the tsconfig.json file:
 Create the folder structure:
 
 ```
-backend/
-├── src/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── utils/
+📂 backend/
+├── 📂 src/
+│   ├── 📂 controllers/
+│   ├── 📂 models/
+│   ├── 📂 routes/
+│   ├── 📂 utils/
 │   └── index.ts
 ├── .env
 ├── .gitignore
@@ -298,7 +298,7 @@ Your backend should now be running on `http://localhost:5000`.
 }
 ```
 
-`Note`: Copy the `token` from the response. You’ll need it for `authenticated` requests.
+`Note`: Copy the `token` from the response. You’ll need it for `authenticated` requests. This is your `JWT token`.
 
 3. Create a new note:
 
@@ -346,4 +346,62 @@ Your backend should now be running on `http://localhost:5000`.
   }
 ]
 ```
+
+5. Get all users:
+
+- Method: `GET`
+- URL: `http://localhost:5000/api/users`
+- Headers:
+  - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer YOUR_JWT_TOKEN`
+- Response 
+
+```json
+[
+  {
+    "id": 1,
+    "username": "purna_shrestha"
+  },
+  {
+    "id": 2,
+    "username": "purna_shrestha2"
+  }
+]
+```
+
+6. Fetch all notes of a user:
+
+- Method: `GET`
+- URL: `http://localhost:5000/api/notes/all`
+- Headers:
+  - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer YOUR_JWT_TOKEN`
+- Response
+
+```json
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "title": "My First Note",
+    "content": "This is my first note.",
+    "created_at": "2025-01-30T12:34:56.789Z"
+  },
+  {
+    "id": 2,
+    "user_id": 1,
+    "title": "My Second Note",
+    "content": "This is my second note.",
+    "created_at": "2025-01-30T12:34:56.789Z"
+  },
+  {
+    "id": 3,
+    "user_id": 1,
+    "title": "My Third Note",
+    "content": "This is my third note.",
+    "created_at": "2025-01-30T12:34:56.789Z"
+  }
+]
+```
+
 

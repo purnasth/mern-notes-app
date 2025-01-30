@@ -1,20 +1,20 @@
-import { useState } from 'react';
-import { login } from '../services/api';
-import { useNavigate } from 'react-router-dom';
+import { useState } from "react";
+import { login } from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const token = await login(username, password);
-      localStorage.setItem('token', token);
-      navigate('/');
+      localStorage.setItem("token", token);
+      navigate("/");
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error("Login failed:", error);
     }
   };
 
@@ -36,7 +36,10 @@ const Login = () => {
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-2 border rounded"
         />
-        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">
+        <button
+          type="submit"
+          className="w-full p-2 bg-blue-500 text-white rounded"
+        >
           Login
         </button>
       </form>
