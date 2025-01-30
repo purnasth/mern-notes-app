@@ -254,4 +254,96 @@ Your backend should now be running on `http://localhost:5000`.
 
 ### Test the API in Postman
 
+1. Register a new user:
+
+- Method: `POST`
+- URL: `http://localhost:5000/api/auth/register`
+- Headers:
+  - Key: `Content-Type`
+  - Value: `application/json`
+
+- Body:
+```json
+{
+  "id": 1,
+  "username": "purna_shrestha"
+}
+```
+- Response:
+```json
+{
+  "id": 1,
+  "username": "purna_shrestha"
+}
+```
+
+2. Login with the registered user:
+
+- Method: `POST`
+- URL: `http://localhost:5000/api/auth/login`
+- Headers:
+  - `Content-Type`: `application/json`
+
+- Body:
+```json
+{
+  "username": "purna_shrestha",
+  "password": "your_password"
+}
+```
+- Response:
+```json
+{
+  "token": "YOUR_JWT_TOKEN"
+}
+```
+
+`Note`: Copy the `token` from the response. You’ll need it for `authenticated` requests.
+
+3. Create a new note:
+
+- Method: `POST`
+- URL: `http://localhost:5000/api/notes`
+- Headers:
+  - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer YOUR_JWT_TOKEN` (replace `YOUR_JWT_TOKEN` with the token from the login response)
+
+- Body:
+```json
+{
+  "title": "My First Note",
+  "content": "This is my first note."
+}
+```
+- Response:
+```json
+{
+  "id": 1,
+  "user_id": 1,
+  "title": "My First Note",
+  "content": "This is my first note.",
+  "created_at": "2025-01-30T12:34:56.789Z"
+}
+```
+
+4. Get all notes:
+
+- Method: `GET`
+- URL: `http://localhost:5000/api/notes`
+- Headers:
+  - `Content-Type`: `application/json`
+  - `Authorization`: `Bearer YOUR_JWT_TOKEN`
+
+- Response:
+```json
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "title": "My First Note",
+    "content": "This is my first note.",
+    "created_at": "2025-01-30T12:34:56.789Z"
+  }
+]
+```
 
