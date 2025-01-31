@@ -1,3 +1,9 @@
+import { Request } from 'express';
+
+export interface AuthenticatedRequest extends Request {
+  user?: { userId: number; username: string };
+}
+
 export interface User {
   id: number;
   username: string;
@@ -10,7 +16,7 @@ export interface Note {
   title: string;
   content: string;
   created_at: string;
-  categories: number[];
+  categories?: number[];
 }
 
 export interface Category {

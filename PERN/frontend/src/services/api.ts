@@ -1,5 +1,6 @@
 const API_URL = "http://localhost:5000/api";
 
+// Register a new user
 export const register = async (username: string, password: string) => {
   const response = await fetch(`${API_URL}/users/register`, {
     method: "POST",
@@ -10,6 +11,7 @@ export const register = async (username: string, password: string) => {
   return response.json();
 };
 
+// Login a user
 export const login = async (username: string, password: string) => {
   const response = await fetch(`${API_URL}/users/login`, {
     method: "POST",
@@ -21,15 +23,26 @@ export const login = async (username: string, password: string) => {
   return data.token;
 };
 
-export const fetchNotes = async () => {
+// Fetch notes
+export const fetchNotes = async (
+  search?: string,
+  sortBy?: string,
+  categoryId?: number
+) => {
   const token = localStorage.getItem("token");
-  const response = await fetch(`${API_URL}/notes`, {
+  const url = new URL(`${API_URL}/notes`);
+  if (search) url.searchParams.append("search", search);
+  if (sortBy) url.searchParams.append("sortBy", sortBy);
+  if (categoryId) url.searchParams.append("category", categoryId.toString());
+
+  const response = await fetch(url.toString(), {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!response.ok) throw new Error("Failed to fetch notes");
   return response.json();
 };
 
+// Create a new note
 export const createNote = async (title: string, content: string) => {
   const token = localStorage.getItem("token");
   const response = await fetch(`${API_URL}/notes`, {
@@ -66,5 +79,30 @@ export const fetchAllNotes = async () => {
   });
 
   if (!response.ok) throw new Error("Failed to fetch all notes");
+  return response.json();
+};
+
+// Fetch all categories
+export const fetchAllCategories = async () => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_URL}/categories`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) throw new Error("Failed to fetch categories");
+  return response.json();
+};
+
+// Add a category to a note
+export const addCategoryToNote = async (noteId: number, categoryId: number) => {
+  const token = localStorage.getItem("token");
+  const response = await fetch(`${API_URL}/notes/${noteId}/categories`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ categoryId }),
+  });
+  if (!response.ok) throw new Error("Failed to add category to note");
   return response.json();
 };
